@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FiCalendar, FiMapPin, FiUser, FiUsers } from "react-icons/fi";
 import EventImage from "@/components/EventImage";
@@ -17,6 +18,7 @@ export default async function EventDetailsPage({ params }: PageProps<"/events/[i
 
   return (
     <div className="page-container grid gap-8 py-12 lg:grid-cols-2 lg:items-start">
+      <Link href="/events" className="link font-semibold lg:col-span-2">Back to upcoming events</Link>
       <div className="aspect-[16/10] overflow-hidden rounded-box">
         <EventImage src={event.thumbnail} alt={event.title} />
       </div>

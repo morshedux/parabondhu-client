@@ -21,8 +21,8 @@ export default function JoinButton({ eventId, isPast }: { eventId: string; isPas
       .catch(() => setJoined(false));
   }, [email, eventId]);
 
-  if (isPast) return <button type="button" className="btn btn-disabled" disabled>This event has ended</button>;
-  if (joined) return <button type="button" className="btn btn-disabled" disabled>You joined this event</button>;
+  if (isPast) return <p className="badge badge-neutral badge-lg font-semibold">This event has ended</p>;
+  if (joined) return <p className="badge badge-success badge-lg font-semibold">You joined this event</p>;
 
   const join = async () => {
     if (!session) {
