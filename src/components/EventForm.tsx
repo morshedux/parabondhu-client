@@ -11,6 +11,8 @@ interface Props {
   onSubmit: (values: EventFormValues) => Promise<void>;
 }
 
+const NOT_AN_IMAGE = "This link does not open an image. Use a direct image URL or upload one.";
+
 function localNow() {
   const now = new Date();
   now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
@@ -27,6 +29,7 @@ export default function EventForm({ initial, submitLabel, onSubmit }: Props) {
   const [values, setValues] = useState(initial);
   const [errors, setErrors] = useState<FormErrors<EventFormValues>>({});
   const [busy, setBusy] = useState(false);
+  const [brokenThumbnail, setBrokenThumbnail] = useState("");
   const [minDate] = useState(localNow);
 
   const set = (key: keyof EventFormValues, value: string) =>
@@ -48,6 +51,9 @@ export default function EventForm({ initial, submitLabel, onSubmit }: Props) {
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     const found = validateEvent(values);
+    if (!found.thumbnail && brokenThumbnail === values.thumbnail) {
+      found.thumbnail = NOT_AN_IMAGE;
+    }
     setErrors(found);
     if (Object.keys(found).length) return;
     setBusy(true);
@@ -86,7 +92,16 @@ export default function EventForm({ initial, submitLabel, onSubmit }: Props) {
         <input id="thumbnail" type="url" className="input w-full" placeholder={uploaded ? "Using your uploaded image" : "https://example.com/event.jpg"} value={uploaded ? "" : values.thumbnail} onChange={(e) => set("thumbnail", e.target.value)} />
       </Field>
       {values.thumbnail && (uploaded || isHttpUrl(values.thumbnail)) && (
-        <img src={values.thumbnail} alt="Thumbnail preview" className="aspect-[16/10] w-full rounded-box object-cover" />
+        <img
+          src={values.thumbnail}
+          alt="Thumbnail preview"
+          className={`aspect-[16/10] w-full rounded-box object-cover ${brokenThumbnail === values.thumbnail ? "hidden" : ""}`}
+          onLoad={() => setBrokenThumbnail("")}
+          onError={() => {
+            setBrokenThumbnail(values.thumbnail);
+            setErrors((current) => ({ ...current, thumbnail: NOT_AN_IMAGE }));
+          }}
+        />
       )}
       <button type="submit" className="btn btn-primary w-full" disabled={busy}>
         {busy ? "Saving..." : submitLabel}
