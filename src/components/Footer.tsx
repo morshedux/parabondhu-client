@@ -26,6 +26,7 @@ export default function Footer() {
             <li><Link href="/events" className="hover:underline">Upcoming events</Link></li>
             <li><Link href="/events/create" className="hover:underline">Create an event</Link></li>
             <li><Link href="/events/joined" className="hover:underline">Joined events</Link></li>
+            <li><Link href="/privacy" className="hover:underline">Privacy policy</Link></li>
           </ul>
         </div>
         <div>
