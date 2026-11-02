@@ -1,4 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
+
+const LARGE = "(min-width: 1024px) 25vw, 50vw";
+const SMALL = "(min-width: 1024px) 13vw, 25vw";
 
 export default function Banner() {
   return (
@@ -23,13 +27,13 @@ export default function Banner() {
           </div>
         </div>
         <div className="quilt" aria-hidden="true">
-          <div className="quilt-patch col-span-2 row-span-2"><img src="/gallery/food-boxes.jpg" alt="" /></div>
+          <div className="quilt-patch col-span-2 row-span-2"><Image src="/gallery/food-boxes.jpg" alt="" fill sizes={LARGE} preload /></div>
           <div className="quilt-patch bg-[#f4b223]" />
-          <div className="quilt-patch"><img src="/gallery/hands-plant.jpg" alt="" /></div>
-          <div className="quilt-patch col-span-2"><img src="/gallery/beach-cleanup.jpg" alt="" /></div>
-          <div className="quilt-patch"><img src="/gallery/volunteer.jpg" alt="" /></div>
+          <div className="quilt-patch"><Image src="/gallery/hands-plant.jpg" alt="" fill sizes={SMALL} preload /></div>
+          <div className="quilt-patch col-span-2"><Image src="/gallery/beach-cleanup.jpg" alt="" fill sizes={LARGE} preload /></div>
+          <div className="quilt-patch"><Image src="/gallery/volunteer.jpg" alt="" fill sizes={SMALL} /></div>
           <div className="quilt-patch bg-[#a81f45]" />
-          <div className="quilt-patch col-span-2"><img src="/gallery/children.jpg" alt="" /></div>
+          <div className="quilt-patch col-span-2"><Image src="/gallery/children.jpg" alt="" fill sizes={LARGE} /></div>
         </div>
       </div>
     </section>
