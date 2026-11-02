@@ -141,6 +141,9 @@ html {
   position: relative;
   overflow: hidden;
   border-radius: 6px;
+}
+
+.quilt-patch:has(img) {
   background: rgb(255 255 255 / 0.12);
 }
 
