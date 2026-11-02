@@ -33,7 +33,7 @@ export default function Footer() {
           <h2 className="font-display text-lg font-bold">Contact</h2>
           <ul className="mt-4 space-y-2 opacity-80">
             <li>Mirpur 10, Dhaka, Bangladesh</li>
-            <li><a href="mailto:hello@parabondhu.org" className="hover:underline">hello@parabondhu.org</a></li>
+            <li><a href="mailto:morshedux@gmail.com" className="hover:underline">morshedux@gmail.com</a></li>
           </ul>
           <div className="mt-4 flex gap-2">
             {SOCIALS.map(({ href, label, icon: Icon }) => (

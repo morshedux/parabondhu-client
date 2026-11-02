@@ -44,7 +44,6 @@ export default function Navbar() {
               <div
                 tabIndex={0}
                 role="button"
-                title={session.user.name}
                 aria-label={`Account menu for ${session.user.name}`}
                 className="tooltip tooltip-bottom block cursor-pointer rounded-full"
                 data-tip={session.user.name}
