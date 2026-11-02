@@ -6,31 +6,8 @@ import toast from "react-hot-toast";
 import Field from "@/components/Field";
 import UserAvatar from "@/components/UserAvatar";
 import { authClient } from "@/lib/auth-client";
+import { imageToDataUrl } from "@/lib/image";
 import { isHttpUrl } from "@/lib/validation";
-
-const PHOTO_SIZE = 200;
-
-async function photoToDataUrl(file: File) {
-  const bitmap = await createImageBitmap(file);
-  const side = Math.min(bitmap.width, bitmap.height);
-  const canvas = document.createElement("canvas");
-  canvas.width = PHOTO_SIZE;
-  canvas.height = PHOTO_SIZE;
-  canvas
-    .getContext("2d")
-    ?.drawImage(
-      bitmap,
-      (bitmap.width - side) / 2,
-      (bitmap.height - side) / 2,
-      side,
-      side,
-      0,
-      0,
-      PHOTO_SIZE,
-      PHOTO_SIZE,
-    );
-  return canvas.toDataURL("image/jpeg", 0.8);
-}
 
 interface Props {
   name: string;
@@ -51,7 +28,7 @@ export default function ProfileForm({ name: initialName, email, image: initialIm
     const file = event.target.files?.[0];
     if (!file) return;
     try {
-      setImage(await photoToDataUrl(file));
+      setImage(await imageToDataUrl(file, 200, 200));
       setErrors((current) => ({ ...current, image: null }));
     } catch {
       setErrors((current) => ({ ...current, image: "Choose a JPG, PNG or WebP image." }));
