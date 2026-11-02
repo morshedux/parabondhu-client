@@ -30,5 +30,9 @@ export const auth = betterAuth({
       if (message) throw new APIError("BAD_REQUEST", { message });
     }),
   },
-  plugins: [jwt(), nextCookies()],
+  plugins: [
+    // Uploaded photos are too large for a request header, so the token leaves them out.
+    jwt({ jwt: { definePayload: ({ user }) => ({ email: user.email, name: user.name }) } }),
+    nextCookies(),
+  ],
 });
