@@ -2,7 +2,7 @@
 
 Parabondhu ("friend of the neighbourhood") is a community platform where people create, join and track social service events in their local area.
 
-**Live site:** _coming soon_
+**Live site:** https://parabondhu-client.vercel.app
 
 ## Features
 
