@@ -45,7 +45,9 @@ export function validateEvent(values: EventFormValues) {
     errors.description = "Description needs at least 20 characters.";
   }
   if (!EVENT_TYPES.includes(values.eventType)) errors.eventType = "Choose an event type.";
-  if (!isHttpUrl(values.thumbnail)) errors.thumbnail = "Enter a valid image URL.";
+  if (!values.thumbnail.startsWith("data:image/") && !isHttpUrl(values.thumbnail)) {
+    errors.thumbnail = "Upload an image or enter a valid image URL.";
+  }
   if (values.location.trim().length < 3) errors.location = "Location needs at least 3 characters.";
   if (!values.eventDate) {
     errors.eventDate = "Choose the event date and time.";

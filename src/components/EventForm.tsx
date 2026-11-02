@@ -1,8 +1,9 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import Field from "./Field";
-import { EVENT_TYPES, EventFormValues, FormErrors, validateEvent } from "@/lib/validation";
+import { imageToDataUrl } from "@/lib/image";
+import { EVENT_TYPES, EventFormValues, FormErrors, isHttpUrl, validateEvent } from "@/lib/validation";
 
 interface Props {
   initial: EventFormValues;
@@ -30,6 +31,19 @@ export default function EventForm({ initial, submitLabel, onSubmit }: Props) {
 
   const set = (key: keyof EventFormValues, value: string) =>
     setValues((current) => ({ ...current, [key]: value }));
+
+  const uploaded = values.thumbnail.startsWith("data:image/");
+
+  const chooseThumbnail = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    try {
+      set("thumbnail", await imageToDataUrl(file, 800, 500));
+      setErrors((current) => ({ ...current, thumbnail: undefined }));
+    } catch {
+      setErrors((current) => ({ ...current, thumbnail: "Choose a JPG, PNG or WebP image." }));
+    }
+  };
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
@@ -65,9 +79,15 @@ export default function EventForm({ initial, submitLabel, onSubmit }: Props) {
       <Field label="Location" htmlFor="location" error={errors.location}>
         <input id="location" className="input w-full" placeholder="Mirpur 10, Dhaka" value={values.location} onChange={(e) => set("location", e.target.value)} />
       </Field>
-      <Field label="Thumbnail image URL" htmlFor="thumbnail" error={errors.thumbnail}>
-        <input id="thumbnail" type="url" className="input w-full" placeholder="https://example.com/event.jpg" value={values.thumbnail} onChange={(e) => set("thumbnail", e.target.value)} />
+      <Field label="Upload a thumbnail" htmlFor="thumbnailFile">
+        <input id="thumbnailFile" type="file" accept="image/jpeg,image/png,image/webp" className="file-input w-full" onChange={chooseThumbnail} />
       </Field>
+      <Field label="Or use a thumbnail image URL" htmlFor="thumbnail" error={errors.thumbnail}>
+        <input id="thumbnail" type="url" className="input w-full" placeholder={uploaded ? "Using your uploaded image" : "https://example.com/event.jpg"} value={uploaded ? "" : values.thumbnail} onChange={(e) => set("thumbnail", e.target.value)} />
+      </Field>
+      {values.thumbnail && (uploaded || isHttpUrl(values.thumbnail)) && (
+        <img src={values.thumbnail} alt="Thumbnail preview" className="aspect-[16/10] w-full rounded-box object-cover" />
+      )}
       <button type="submit" className="btn btn-primary w-full" disabled={busy}>
         {busy ? "Saving..." : submitLabel}
       </button>
