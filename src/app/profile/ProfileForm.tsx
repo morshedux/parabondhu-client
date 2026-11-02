@@ -1,0 +1,64 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
+import toast from "react-hot-toast";
+import Field from "@/components/Field";
+import UserAvatar from "@/components/UserAvatar";
+import { authClient } from "@/lib/auth-client";
+import { isHttpUrl } from "@/lib/validation";
+
+interface Props {
+  name: string;
+  email: string;
+  image: string;
+}
+
+export default function ProfileForm({ name: initialName, email, image: initialImage }: Props) {
+  const router = useRouter();
+  const [name, setName] = useState(initialName);
+  const [image, setImage] = useState(initialImage);
+  const [errors, setErrors] = useState<{ name?: string | null; image?: string | null }>({});
+  const [busy, setBusy] = useState(false);
+
+  const submit = async (event: FormEvent) => {
+    event.preventDefault();
+    const found = {
+      name: name.trim().length < 2 ? "Name needs at least 2 characters." : null,
+      image: isHttpUrl(image) ? null : "Enter a valid photo URL.",
+    };
+    setErrors(found);
+    if (found.name || found.image) return;
+
+    setBusy(true);
+    const { error } = await authClient.updateUser({ name: name.trim(), image: image.trim() });
+    setBusy(false);
+    if (error) {
+      toast.error(error.message || "Profile could not be updated. Try again.");
+      return;
+    }
+    toast.success("Profile updated.");
+    router.refresh();
+  };
+
+  return (
+    <form onSubmit={submit} noValidate className="mx-auto max-w-lg space-y-5">
+      <div className="flex items-center gap-4">
+        <UserAvatar key={image} name={name || email} image={image} size="size-20" />
+        <div className="min-w-0">
+          <p className="truncate font-display text-xl font-bold">{name}</p>
+          <p className="truncate text-sm opacity-75">{email}</p>
+        </div>
+      </div>
+      <Field label="Name" htmlFor="name" error={errors.name}>
+        <input id="name" className="input w-full" value={name} onChange={(e) => setName(e.target.value)} />
+      </Field>
+      <Field label="Photo URL" htmlFor="image" error={errors.image}>
+        <input id="image" type="url" className="input w-full" value={image} onChange={(e) => setImage(e.target.value)} />
+      </Field>
+      <button type="submit" className="btn btn-primary w-full" disabled={busy}>
+        {busy ? "Saving..." : "Save profile"}
+      </button>
+    </form>
+  );
+}
