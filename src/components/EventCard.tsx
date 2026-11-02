@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FiCalendar, FiMapPin } from "react-icons/fi";
-import { EventItem, formatDate } from "@/lib/api";
+import { EventItem, formatDate, hasPassed } from "@/lib/api";
 import EventImage from "./EventImage";
 
 export default function EventCard({ event }: { event: EventItem }) {
@@ -11,6 +11,9 @@ export default function EventCard({ event }: { event: EventItem }) {
         <span className="badge badge-accent absolute left-3 top-3 font-semibold">
           {event.eventType}
         </span>
+        {hasPassed(event.eventDate) && (
+          <span className="badge badge-neutral absolute right-3 top-3 font-semibold">Ended</span>
+        )}
       </div>
       <div className="flex flex-1 flex-col gap-3 p-5">
         <h3 className="line-clamp-2 min-h-14 font-display text-xl font-bold leading-7">

@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import EventImage from "@/components/EventImage";
 import { EventGridSkeleton } from "@/components/Skeletons";
-import { api, errorMessage, EventItem, formatDate } from "@/lib/api";
+import { api, errorMessage, EventItem, formatDate, hasPassed } from "@/lib/api";
 
 export default function ManageEvents() {
   const [events, setEvents] = useState<EventItem[] | null>(null);
@@ -56,8 +56,11 @@ export default function ManageEvents() {
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {events.map((event) => (
           <article key={event._id} className="flex h-full flex-col overflow-hidden rounded-box border border-base-300">
-            <div className="aspect-[16/10]">
+            <div className="relative aspect-[16/10]">
               <EventImage src={event.thumbnail} alt={event.title} />
+              {hasPassed(event.eventDate) && (
+                <span className="badge badge-neutral absolute right-3 top-3 font-semibold">Ended</span>
+              )}
             </div>
             <div className="flex flex-1 flex-col gap-2 p-5">
               <h2 className="line-clamp-2 min-h-14 font-display text-xl font-bold leading-7">{event.title}</h2>
